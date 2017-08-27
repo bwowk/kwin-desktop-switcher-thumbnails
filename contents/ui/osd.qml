@@ -48,7 +48,7 @@ PlasmaCore.Dialog {
             dialogItem.previousDesktop = dialogItem.currentDesktop;
             timer.stop();
             dialogItem.currentDesktop = workspace.currentDesktop - 1;
-            textElement.text = "Test";
+            textElement.text = workspace.desktopName(workspace.currentDesktop);
             // screen geometry might have changed
             var screen = workspace.clientArea(KWin.FullScreenArea, workspace.activeScreen, workspace.currentDesktop);
             dialogItem.screenWidth = screen.width;
@@ -82,7 +82,7 @@ PlasmaCore.Dialog {
             id: textElement
             anchors.top: dialogItem.showGrid ? parent.top : undefined
             anchors.horizontalCenter: parent.horizontalCenter
-            text: "Testing"
+            text: workspace.desktopName(workspace.currentDesktop)
         }
         Grid {
             id: view
@@ -106,31 +106,9 @@ PlasmaCore.Dialog {
                     KWinComponents.DesktopThumbnailItem {
                         anchors.fill: parent
                         desktop: index + 1
-                    }
-                    states: [
-                        State {
-                            name: "NORMAL"
-                            when: index != dialogItem.currentDesktop
-                            PropertyChanges {
-                                target: activeElement
-                                opacity: 0.0
-                            }
-                        },
-                        State {
-                            name: "SELECTED"
-                            when: index == dialogItem.currentDesktop
-                            PropertyChanges {
-                                target: activeElement
-                                opacity: 1.0
-                            }
-                        }
-                    ]
-                    Component.onCompleted: {
-                        view.state = (index == dialogItem.currentDesktop) ? "SELECTED" : "NORMAL"
+                        parent: null
                     }
                 }
-                
-                    
             }
         }
 
