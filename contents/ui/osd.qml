@@ -88,6 +88,7 @@ PlasmaCore.Dialog {
             id: view
             columns: 1
             rows: 1
+            visible: dialogItem.showGrid
             property int itemWidth: dialogItem.screenWidth * Math.min(0.8/columns, 0.1)
             property int itemHeight: Math.min(itemWidth * (dialogItem.screenHeight / dialogItem.screenWidth), dialogItem.screenHeight * Math.min(0.8/rows, 0.1))
             anchors {
@@ -96,7 +97,7 @@ PlasmaCore.Dialog {
                 right: parent.right
                 bottom: parent.bottom
             }
-            visible: dialogItem.showGrid
+            
             Repeater {
                 id: repeater
                 model: workspace.desktops
@@ -110,6 +111,24 @@ PlasmaCore.Dialog {
                     }
                 }
             }
+            PlasmaCore.FrameSvgItem {
+                id: activeElement
+                anchors.fill: repeater.itemAt(dialogItem.previousDesktop)
+                imagePath: "widgets/pager"
+                prefix: "active"
+                opacity: 0.25
+                transitions: Transition {
+                    // smoothly reanchor myRect and move into new position
+                    AnchorAnimation { duration: dialogItem.animationDuration/2 }
+                }
+            }
+            states: State {
+                name: "reanchored"
+                AnchorChanges {
+                    target: activeElement
+                    anchors.fill: repeater.itemAt(dialogItem.currentDesktop) }
+            }
+            Component.onCompleted: activeElement.state = "reanchored"
         }
 
         Timer {
